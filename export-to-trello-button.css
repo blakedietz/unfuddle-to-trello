@@ -1,9 +1,18 @@
 .export-to-trello-button
 {
-    width: 17.63px;
-    height: 17.63px;
-    background-color: red;
+    width: 17px;
+    height: 17px;
+
     float: right;
+
     margin-right: 5px;
+
     cursor: pointer;
+    font-size:17px;
+    color:#333;
+}
+
+.export-to-trello-button:hover
+{
+    color:#8f363e;
 }

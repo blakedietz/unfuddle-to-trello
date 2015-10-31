@@ -4,14 +4,18 @@ setTimeout(addButtonToTicket, 4000);
 
 function addButtonToTicket()
 {
-  var ticketHeaders        = document.querySelector('div.ticket-header div+div');
-  var exportToTrelloButton = document.createElement("DIV");
-  exportToTrelloButton.classList.add('export-to-trello-button');
+  var ticketHeaders = document.querySelector('div.ticket-header div+div');
+  var trelloIcon    = document.createElement('I');
+  trelloIcon.classList.add('icon-trello');
 
-  exportToTrelloButton.addEventListener('click', () =>
-  {
-    exportTicketToTrello();
-  });
+  var exportToTrelloButton = document.createElement('DIV');
+  exportToTrelloButton.classList.add('export-to-trello-button');
+  exportToTrelloButton.appendChild(trelloIcon);
+  exportToTrelloButton.addEventListener('click',
+    () =>
+    {
+      exportTicketToTrello();
+    });
 
   ticketHeaders.appendChild(exportToTrelloButton);
 
@@ -42,10 +46,11 @@ function exportTicketToTrello()
           var toDoList = successMessage.filter((list) => list.name == "To Do")[0];
 
           var newCard =
-              {name: "Bug: " + parseURLForTicketNumber(location.hash),
-                desc: "Squash dis bug",
-                pos: "top",
-                due: null,
+              {
+                name  : "Bug: " + parseURLForTicketNumber(location.hash),
+                desc  : "Squash dis bug",
+                pos   : "top",
+                due   : null,
                 idList: toDoList.id
               };
 
