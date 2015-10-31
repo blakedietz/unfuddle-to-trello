@@ -8,7 +8,9 @@
         "<all_urls>"
       ],
       "js": [
-        "content.js"
+        "content.js",
+        "jquery-1.7.1.min.js",
+        "trello-client.js"
       ],
       "css" : [
         "export-to-trello-button.css"
