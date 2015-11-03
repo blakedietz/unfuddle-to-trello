@@ -7,7 +7,6 @@
       "matches": [
         "*://whitecloud.unfuddle.com/*"
       ],
-      // https://stackoverflow.com/questions/15959090/how-to-trigger-a-chrome-extension-content-script-for-a-given-hash-in-the-url/15960339#15960339
       "include_globs": [
         "*#/projects/*/tickets/by_number/*"
       ],
