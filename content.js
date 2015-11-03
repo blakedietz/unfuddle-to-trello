@@ -26,8 +26,12 @@ function main()
           write: true
         },
         expiration: "never",
-        function() { console.log('trello authnetication success') },
-        function() { console.log('trello authentication failure') }
+        function() {
+          console.log('trello authnetication success')
+        },
+        function() {
+          console.log('trello authentication failure')
+        }
       });
   }
 
@@ -37,11 +41,13 @@ function main()
 
     var newCard =
         {
-          name  : "Bug: " + parseURLForTicketNumber(location.hash),
-          desc  : location.href,
-          pos   : "top",
-          due   : null,
-          idList: toDoList.id
+          name    : 'Bug : ' + document.querySelector('.summary').innerText,
+          desc    : location.href,
+          pos     : 'top',
+          due     : null,
+          idList  : toDoList.id,
+          // FIXME : get this from a central store of information that is probably already defined by the user
+          idLabels: '55759f05664ce8ff30954931'
         };
 
     Trello.post('/cards/',
@@ -59,11 +65,7 @@ function main()
 
   function filterBoardToUserSelection(response)
   {
-    var board = response.filter((board) => board.name == "Scrum Board - Team \“NULL\"")[0];
-    Trello.get('/boards/' + board.id + '/lists',
-      addCardToList,
-      (failureMessage) => { console.log(failureMessage); }
-    );
+    return response.filter((board) => board.name == "Scrum Board - Team \“NULL\"")[0];
   }
 
   function exportTicketToTrello()
@@ -71,9 +73,18 @@ function main()
     Trello.get('/member/me/boards',
       (response) =>
       {
-        filterBoardToUserSelection(response);
+        Trello.get('/boards/' + filterBoardToUserSelection(response).id + '/lists',
+          addCardToList,
+          (failureMessage) =>
+          {
+            console.log(failureMessage);
+          }
+        );
       },
-      (failureMessage) => { console.log(failureMessage); }
+      (failureMessage) =>
+      {
+        console.log(failureMessage);
+      }
     );
   }
 
@@ -82,15 +93,24 @@ function main()
     var exportToTrelloButton = document.createElement('DIV');
     exportToTrelloButton.classList.add('export-to-trello-button');
 
-    var trelloIcon    = document.createElement('I');
+    var trelloIcon = document.createElement('I');
     trelloIcon.classList.add('icon-trello');
 
     exportToTrelloButton.appendChild(trelloIcon);
-    exportToTrelloButton.addEventListener('click', ( ) =>
+    exportToTrelloButton.addEventListener('click', () =>
     {
       exportTicketToTrello();
     });
     return exportToTrelloButton;
+  }
+
+  function getLabels(boardID)
+  {
+    return Trello.get('/boards/' + boardID + '/labels')
+      .then((successMessage) =>
+      {
+        return successMessabe.filter((label) => label.name == "Bug");
+      });
   }
 
   function parseURLForTicketNumber(hash)
