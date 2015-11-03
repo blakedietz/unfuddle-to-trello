@@ -26,12 +26,8 @@ function main()
           write: true
         },
         expiration: "never",
-        function() {
-          console.log('trello authnetication success')
-        },
-        function() {
-          console.log('trello authentication failure')
-        }
+        function() { console.log('trello authnetication success') },
+        function() { console.log('trello authentication failure') }
       });
   }
 
@@ -42,7 +38,7 @@ function main()
     var newCard =
         {
           name  : "Bug: " + parseURLForTicketNumber(location.hash),
-          desc  : "Squash dis bug",
+          desc  : location.href,
           pos   : "top",
           due   : null,
           idList: toDoList.id
@@ -101,8 +97,6 @@ function main()
   {
     var queryString = hash.split('/');
     // get last item, split on query string and take the first item
-    var ticketID = queryString.pop().split('?')[0];
-
-    return ticketID;
+    return queryString.pop().split('?')[0];
   }
 }
