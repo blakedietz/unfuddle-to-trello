@@ -54,6 +54,8 @@ function main()
       newCard,
       (successMessage) =>
       {
+        removePointsInput();
+        restyleTrelloButton();
         console.log(successMessage);
       },
       (failureMessage) =>
@@ -113,11 +115,16 @@ function main()
 
   function restyleTrelloButton()
   {
-    var trelloIcon = document.querySelector('i.pull-right');
-    if (trelloIcon)
+    var trelloIcon = document.querySelector('i.icon-trello');
+    if (trelloIcon.classList.contains('pull-right'))
     {
       trelloIcon.classList.remove('pull-right');
       trelloIcon.classList.add('pull-left');
+    }
+    else
+    {
+      trelloIcon.classList.remove('pull-left');
+      trelloIcon.classList.add('pull-right');
     }
   }
 
@@ -125,6 +132,13 @@ function main()
   {
     var pointsInput = createPointsInput();
     buttonContainer.appendChild(pointsInput)
+  }
+
+  function removePointsInput()
+  {
+    var trelloButton = document.querySelector('.export-to-trello-button');
+    var pointsForm   = document.querySelector('.export-to-trello-button form');
+    trelloButton.removeChild(pointsForm);
   }
 
   function createPointsInput()
@@ -146,6 +160,7 @@ function main()
     });
 
     var pointsForm   = document.createElement('FORM');
+    pointsForm.id    = "points_form";
     pointsForm.appendChild(pointsInput);
     pointsForm.appendChild(pointsSubmit);
 
