@@ -1,7 +1,7 @@
 .export-to-trello-button
 {
-    width: 17px;
     height: 17px;
+    min-width:121px;
 
     float: right;
 
@@ -12,7 +12,43 @@
     color:#333;
 }
 
+
+.export-to-trello-button .icon-trello.pull-right
+{
+    float:right;
+}
+.export-to-trello-button .icon-trello.pull-left
+{
+    float:left;
+}
+
+
 .export-to-trello-button:hover
 {
     color:#8f363e;
+}
+
+#submit_button
+{
+    float:left;
+    border-radius: 50px;
+    border: none;
+    height: 17px;
+    line-height: 1px;
+    margin-bottom: 10px;
+    margin-left: 5px;
+    background-color: #999;
+    color: #fff;
+    font-size: 11px;
+}
+
+#points_input
+{
+    float:left;
+
+    width:30px;
+    height: 8px;
+
+    line-height: 8px;
+    font-size: 8px;
 }

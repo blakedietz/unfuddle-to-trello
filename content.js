@@ -35,13 +35,13 @@ function main()
       });
   }
 
-  function addCardToList(response)
+  function addCardToList(response, numberOfPoints)
   {
     var toDoList = response.filter((list) => list.name == "To Do")[0];
 
     var newCard =
         {
-          name    : 'Bug : ' + document.querySelector('.summary').innerText,
+          name    : 'Bug : ' + document.querySelector('.summary').innerText + '(' + numberOfPoints + ')',
           desc    : location.href,
           pos     : 'top',
           due     : null,
@@ -68,13 +68,13 @@ function main()
     return response.filter((board) => board.name == "Scrum Board - Team \“NULL\"")[0];
   }
 
-  function exportTicketToTrello()
+  function exportTicketToTrello(numberOfPoints)
   {
     Trello.get('/member/me/boards',
       (response) =>
       {
         Trello.get('/boards/' + filterBoardToUserSelection(response).id + '/lists',
-          addCardToList,
+          (response) => { return addCardToList(response, numberOfPoints); } ,
           (failureMessage) =>
           {
             console.log(failureMessage);
@@ -95,13 +95,61 @@ function main()
 
     var trelloIcon = document.createElement('I');
     trelloIcon.classList.add('icon-trello');
-
+    trelloIcon.classList.add('pull-right');
+    // todo : remove event listener instead of depending upon closure :P  HACK HACK HACK
     exportToTrelloButton.appendChild(trelloIcon);
+    var hasClicked = false;
     exportToTrelloButton.addEventListener('click', () =>
     {
-      exportTicketToTrello();
+      if (!hasClicked)
+      {
+        hasClicked = true;
+        restyleTrelloButton();
+        addPointsInput(exportToTrelloButton);
+      }
     });
     return exportToTrelloButton;
+  }
+
+  function restyleTrelloButton()
+  {
+    var trelloIcon = document.querySelector('i.pull-right');
+    if (trelloIcon)
+    {
+      trelloIcon.classList.remove('pull-right');
+      trelloIcon.classList.add('pull-left');
+    }
+  }
+
+  function addPointsInput(buttonContainer)
+  {
+    var pointsInput = createPointsInput();
+    buttonContainer.appendChild(pointsInput)
+  }
+
+  function createPointsInput()
+  {
+    var pointsInput   = document.createElement('INPUT');
+    var pointsInputID = 'points_input';
+    pointsInput.id    = pointsInputID;
+    pointsInput.setAttribute('type', 'text');
+    pointsInput.setAttribute('name', 'points-input');
+
+    var pointsSubmit = document.createElement('INPUT');
+    pointsSubmit.id  = 'submit_button';
+    pointsSubmit.setAttribute('type', 'button');
+    pointsSubmit.setAttribute('value', 'Submit');
+    pointsSubmit.addEventListener('click', () =>
+    {
+      var pointValue = document.getElementById(pointsInputID).value;
+      exportTicketToTrello(pointValue);
+    });
+
+    var pointsForm   = document.createElement('FORM');
+    pointsForm.appendChild(pointsInput);
+    pointsForm.appendChild(pointsSubmit);
+
+    return pointsForm;
   }
 
   function getLabels(boardID)
