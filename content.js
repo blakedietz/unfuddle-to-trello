@@ -30,6 +30,4 @@ function main()
         TrelloButton.remove();
       });
   }
-
-
 }
