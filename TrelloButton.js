@@ -2,25 +2,62 @@ let TrelloButton = (() =>
 {
   return class TrelloButton
   {
-    constructor()
+    constructor (config)
     {
-
+      this.onSubmitFunction = config.onSubmitFunction || null;
     }
 
     onPointsSubmit (submitFunction)
     {
       this.onSubmitFunction = submitFunction;
     }
+    
+    remove()
+    {
+
+    }
   }
 
-  function removePointsInput ()
+  function createTrelloButton()
   {
+    var exportToTrelloButton = document.createElement('DIV');
+    exportToTrelloButton.classList.add('export-to-trello-button');
 
+    var trelloIcon = document.createElement('I');
+    trelloIcon.classList.add('icon-trello');
+    trelloIcon.classList.add('pull-right');
+    // todo : remove event listener instead of depending upon closure :P  HACK HACK HACK
+    exportToTrelloButton.appendChild(trelloIcon);
+    var hasClicked = false;
+    exportToTrelloButton.addEventListener('click', () =>
+    {
+      if (!hasClicked)
+      {
+        hasClicked = true;
+        restyleTrelloButton();
+        addPointsInput(exportToTrelloButton);
+      }
+    });
+    return exportToTrelloButton;
+  }
+
+  function removePointsInput()
+  {
+    var trelloButton = document.querySelector('.export-to-trello-button');
+    var pointsForm   = document.querySelector('.export-to-trello-button form');
+    // TODO : Remove points input
+    // removeChild(pointsForm);
   }
 
   function createPointsInput ()
   {
 
+  }
+
+  function addPointsInput(buttonContainer)
+  {
+    var pointsInput = createPointsInput();
+    buttonContainer.appendChild(pointsInput)
   }
 
   function createForm (onSubmitFunction)
