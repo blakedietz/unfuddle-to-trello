@@ -21,10 +21,9 @@ let TrelloService = (() =>
           };
 
       return Trello
-        .post('/cards/', newCard,
+        .post('/cards/', newCard, 
           (successMessage) => { console.log(successMessage); },
-          (failureMessage) => { console.log(failureMessage); }
-        );
+          (failureMessage) => { console.log(failureMessage); });
     }
 
     getLabels (boardID)
@@ -55,6 +54,38 @@ let TrelloService = (() =>
           console.log('trello authentication failure')
         }
       });
+  }
+
+  function exportTicketToTrello(numberOfPoints)
+  {
+    Trello.get('/member/me/boards',
+      (response) =>
+      {
+        Trello.get('/boards/' + filterBoardToUserSelection(response).id + '/lists',
+          (response) => { return addCardToList(response, numberOfPoints); } ,
+          (failureMessage) =>
+          {
+            console.log(failureMessage);
+          }
+        );
+      },
+      (failureMessage) =>
+      {
+        console.log(failureMessage);
+      }
+    );
+  }
+
+  function filterBoardToUserSelection(response)
+  {
+    return response.filter((board) => board.name == "Scrum Board - Team \“NULL\"")[0];
+  }
+
+  function parseURLForTicketNumber(hash)
+  {
+    var queryString = hash.split('/');
+    // get last item, split on query string and take the first item
+    return queryString.pop().split('?')[0];
   }
 
 })();
