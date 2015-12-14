@@ -11,23 +11,22 @@ function main()
 
     if (ticketHeaders == null)
     {
-      return
+      return;
     }
+
+    TrelloService.authorize();
 
     clearInterval(intervalID);
 
-    
-    ticketHeaders.appendChild(TrelloButton.createTrelloButton());
-  }
-
-  // TODO : I'm too drunk for this shit.
-  function wireButtonToService(response, numberOfPoints)
-  {
-    var toDoList = response.filter((list) => list.name == "To Do")[0];
-    TrelloService
-      .then(() =>
+    var config = {
+      onSubmitFunction : function(points)
       {
-        TrelloButton.remove();
-      });
+        return TrelloService.createCard(points);
+      }
+    };
+
+    var trelloButton = new TrelloButton(config);
+
+    ticketHeaders.appendChild(trelloButton.buttonContainer);
   }
 }

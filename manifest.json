@@ -11,6 +11,8 @@
         "*#/projects/*/tickets/by_number/*"
       ],
       "js": [
+        "TrelloButton.js",
+        "TrelloService.js",
         "content.js",
         "jquery-1.7.1.min.js",
         "trello-client.js"

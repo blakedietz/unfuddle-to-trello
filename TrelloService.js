@@ -2,41 +2,40 @@ let TrelloService = (() =>
 {
   return class TrelloService
   {
-    constructor()
+
+    static authorize()
     {
-      authorize();
+      authorizeUser();
     }
 
-    addCardToList(trelloList, numberOfPoints)
+    static createCard (numberOfPoints)
     {
-      var newCard =
+      let resolve = function() { };
+
+      let reject = function() { };
+
+      return new Promise(function(resolve, reject)
+      {
+        getUserBoards()
+          .then(response =>
           {
-            name    : 'Bug : ' + document.querySelector('.summary').innerText + '(' + numberOfPoints + ')',
-            desc    : location.href,
-            pos     : 'top',
-            due     : null,
-            idList  : trelloList.id,
-            // FIXME : get this from a central store of information that is probably already defined by the user
-            idLabels: '55759f05664ce8ff30954931'
-          };
+            return getBoard(response)
+              .then(getBoardResponse =>
+              {
+                return addCardToList(getBoardResponse, numberOfPoints)
+                .then(response =>
+                {
+                  resolve();
+                  return response;
+                });
+              });
+          });
+      });
 
-      return Trello
-        .post('/cards/', newCard, 
-          (successMessage) => { console.log(successMessage); },
-          (failureMessage) => { console.log(failureMessage); });
-    }
-
-    getLabels (boardID)
-    {
-      return Trello.get('/boards/' + boardID + '/labels')
-        .then((successMessage) =>
-        {
-          return successMessage.filter((label) => label.name == "Bug");
-        });
     }
   };
 
-  function authorize()
+  function authorizeUser()
   {
     Trello.authorize(
       {
@@ -56,29 +55,44 @@ let TrelloService = (() =>
       });
   }
 
-  function exportTicketToTrello(numberOfPoints)
+  function getUserBoards()
   {
-    Trello.get('/member/me/boards',
-      (response) =>
-      {
-        Trello.get('/boards/' + filterBoardToUserSelection(response).id + '/lists',
-          (response) => { return addCardToList(response, numberOfPoints); } ,
-          (failureMessage) =>
-          {
-            console.log(failureMessage);
-          }
-        );
-      },
-      (failureMessage) =>
-      {
-        console.log(failureMessage);
-      }
-    );
+    return Trello.get('/member/me/boards');
+  }
+
+  function getBoard (response)
+  {
+    return Trello.get('/boards/' + filterBoardToUserSelection(response) + '/lists');
+  }
+
+  function addCardToList (response, points)
+  {
+    var toDoListId = response.filter((list) => list.name == "To Do")[0].id;
+
+    var newCard =
+        {
+          name    : 'Bug : ' + document.querySelector('.summary').innerText + '(' + points + ')',
+          desc    : location.href,
+          pos     : 'top',
+          due     : null,
+          idList  : toDoListId,
+          // FIXME : get this from a central store of information that is probably already defined by the user
+          idLabels: '55759f05664ce8ff30954931'
+        };
+
+    return Trello.post('/cards/', newCard);
   }
 
   function filterBoardToUserSelection(response)
   {
-    return response.filter((board) => board.name == "Scrum Board - Team \“NULL\"")[0];
+    return response.filter((board) => board.name == "Scrum Board - Team \“NULL\"")[0].id;
+  }
+
+  function getLabels (boardID)
+  {
+    return Trello
+      .get('/boards/' + boardID + '/labels')
+      .then((successMessage) => { return successMessage.filter((label) => label.name == "Bug"); });
   }
 
   function parseURLForTicketNumber(hash)
@@ -87,5 +101,4 @@ let TrelloService = (() =>
     // get last item, split on query string and take the first item
     return queryString.pop().split('?')[0];
   }
-
 })();
