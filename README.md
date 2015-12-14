@@ -1,7 +1,7 @@
 # unfuddle-to-trello
 
 ## Purpose
-The main purpose of this project is to create a small but useful tool for exporting unfuddle tickets into a specified list in a trello selected by the user.
+The main purpose of this project is to create a small but useful tool for exporting unfuddle tickets into a trello list that is specified by the user.
 
 ## Technologies
 
